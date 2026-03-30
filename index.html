@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task App</title>
+</head>
+<body>
+
+<h1>Task Manager</h1>
+
+<form method="POST" action="/add">
+    <input type="text" name="task" placeholder="New Task" required>
+    <select name="category">
+        <option value="Work">Work</option>
+        <option value="Personal">Personal</option>
+    </select>
+    <button type="submit">Add</button>
+</form>
+
+
+<h3>Filter:</h3>
+<a href="/">All</a>
+<a href="/filter/Work">Work</a>
+<a href="/filter/Personal">Personal</a>
+
+<ul>
+{% for t in tasks %}
+<li>
+  {% if t.get("done") %}
+  ✅ <s>{{ t["task"] }}</s>
+{% else %}
+  ❌ {{ t["task"] }}
+{% endif %}
+      ({{ t["category"] }})
+      <form action="/delete" method="POST" style="display:inline;">
+        <input type="hidden" name="task" value="{{t['task']}}">
+        <button type="submit">❌</button>
+      </form>
+      <form action="/toggle" method="POST" style="display:inline;">
+    <input type="hidden" name="task" value="{{ t['task']}}">
+    <button type="submit">
+      {% if t.get("done") %}Undo{% else %}Complete{% endif %}
+    </button>
+  </form>
+
+  </li>
+  {% endfor %}
+</ul>
+
+</body>
+</html>
