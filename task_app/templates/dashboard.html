@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h2 {
+            margin-top:30px;
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom:20px;
+            border-radius:10px;
+        }
+
+        button {
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Dashboard</h1>
+
+<!-- Score -->
+<div class="card">
+    <h3>Daily Score</h3>
+    <p>{{ completed_today }} / {{ total }} habits completed</p>
+    <h2>{{ score }}</h2>
+
+    <div style="background: lightblue; height: 20px;">
+        <div style="background: pink; width: {{score}}%; height: 100%;"></div>
+    </div>
+</div>
+
+<!-- Habits -->
+<div class="card">
+    <h3>Habits</h3>
+
+    <form method="POST" action="/add_habit">
+        <input name="name" placeholder="New habit" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <ul>
+        {% for habit in habits %}
+        <li>
+            {{ habit.name }} - {{ habit.streak }}
+
+            {% if habit.last_completed == today %}
+                <button disabled>Done</button>
+            {% else %}
+                <form method="POST" action="/complete_habit/{{ habit.id }}" style="display:inline;">
+                <button type="submit">Complete</button>
+                </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<h1>7-Day Habit Dashboard</h1>
+
+<ul>
+    {% for habit in habit_data %}
+        <li>
+            {{ habit.name }} -
+            {{ habit.completed_count }}/7 days - 
+            {{ habit.score }}%
+        </li>
+    {% endfor %}
+</ul>
+<!-- Tasks -->
+<div class="card">
+    <h3>Tasks</h3>
+
+    <form method="POST" action="/add">
+        <input name="task" placeholder="New task" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <ul>
+        {% for task in tasks %}
+        <li>
+            {{ task.text }}
+
+            {% if task.done %}
+                ✅
+            {% else %}
+                <form method="POST" action="/toggle/{{ task.id }}" style="display:inline;">
+                    <button>Done</button>
+                </form>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+
+
+<hr>
+
+{% endblock %}
+
+<h2>Habit Tools</h2>
+
+<div>
+    <a href="/habits">View Habits</a>
+    <a href="/habit_history">Habit History</a>
+    <a href="habit_history/last7">Last 7 Days</a>
+    <a href="habit_dashboard">Habit Dashboard</a>
+</div>
+</body>
+</html>

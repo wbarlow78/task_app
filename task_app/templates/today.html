@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Today</h2>
+
+{% if tasks_today %}
+    <ul>
+        {% for task in tasks_today %}
+            <li>
+                <strong>{{ task.text }}</strong>
+                - Due: {{ task.due_date }}
+                - Priority: {{ task.priority }}
+
+                {% if task.due_date < today %}
+                    <span style="color:red;">Overdue</span>
+                {% else %}
+                    <span style="color:green;">Due Today</span>
+                    {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No tasks due today. Nice.</p>
+    {% endif %}
+
+    {% endblock %}

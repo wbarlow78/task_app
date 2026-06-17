@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Task</title>
+</head>
+<body>
+
+<h1>Edit Task</h1>
+
+<form method="POST">
+    <input type="text" name="task" value="{{ task.text }}" required>
+    <input type="date" name="due_date" value="{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '' }}">
+    <button type="submit">Save</button>
+</form>
+
+</body>
+</html>
