@@ -493,6 +493,7 @@ def edit_task(task_id):
     return render_template("edit_task.html", task=task)
 
 with app.app_context():
+    db.drop_all()
     db.create_all()
 
 if __name__ == "__main__":
