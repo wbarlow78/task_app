@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
 from datetime import date, timedelta
 from sqlalchemy import case
+from sqlalchemy import text
 
 app = Flask(__name__)
 app.secret_key = "secret123"
