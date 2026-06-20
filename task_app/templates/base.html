@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task App</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+    <a href="/">Tasks</a> |
+    <a href="habits">Habits</a> |
+    <a href="habit_dashboard">Habit Dashboard</a> |
+    <a href="habit_history">Habit History</a>
+</nav>
+
+<hr>
+
+{% block content %}
+{% endblock %}
+
+<a href="/today">Today</a>
+
+</body>
+</html>

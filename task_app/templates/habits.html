@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+    body {
+        font-family: Arial;
+        max-width: 600px;
+        margin: auto;
+    }
+
+    li {
+        margin:10px 0;
+    }
+
+    button:disabled {
+        background-color: lightgray:
+    }
+    </style>
+    <title>Habits</title>
+</head>
+<body>
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Habit Tracker</h2>
+
+<p>
+    Completed today: {{ completed_today}} / {{total}}
+</p>
+
+<p>
+    Score: <strong>{{score}}%</strong>
+</p>
+    <div style="
+        background: linear-gradient(to right, green, lime);
+        width: {{score}}%;
+        height: 100%;
+        transition: width 0.5s;
+    "></div>
+
+<form method="POST" action="/add_habit">
+    <input name="name" placeholder="new habit">
+    <button type="submit">Add</button>
+</form>
+
+<ul>
+{% for habit in habits %}
+    <li>
+        {{ habit.name }} - 🔥 {{ habit.streak }}
+
+        <!-- COMPLETE BUTTON -->
+        {% if habit.last_completed == today %}
+            <button disabled>Done</button>
+        {% else %}
+            <form method="POST" action="/complete_habit/{{ habit.id }}" style="display:inline;">
+                <button type="submit">Complete</button>
+            </form>
+        {% endif %}
+        <h3>{{ habit.name }}</h3>
+        
+        <p>Current Streak: {{ habit.streak }}</p>
+        <p>Longest Streak: {{ habit.longest_streak }}</p>
+
+        <!-- DELETE BUTTON -->
+        <form method="POST" action="/delete_habit/{{ habit.id }}" style="display:inline;">
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+{% endfor %}
+</ul>
+
+<a href="/">Back to Tasks</a>
+
+<hr>
+
+{% endblock %}
+</body>
+</html>

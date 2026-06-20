@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Habit History</title>
+</head>
+<body>
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Habit History</h2>
+
+<ul>
+    {% for log in logs %}
+        <li>
+            Habit ID: {{ log.habit.name }} - completed on: {{ log.date }}
+        </li>
+    {% endfor %}
+
+<p>
+<a href="/habits">Back to Habits</a> 
+<a href="/habit_history">All History</a>
+<a href="/habit_history/last7">Last 7 Days</a>
+<a href="/login">Back to Log in</a>
+</p>>
+
+</ul>
+
+<hr>
+
+{% endblock %}
+
+</body>
+</html>

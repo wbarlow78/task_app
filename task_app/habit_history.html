@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Habit History</title>
+</head>
+<body>
+
+    <h1>Habit History</h1>>
+
+    <ul>
+        {% for log in logs %}
+            <li>{{ log.habit_id }} - {{ log.date }}</li>
+        {% else %}
+            <li>No history yet.</li>
+        {% endfor %}
+    </ul>
+
+<a href="/habit_history">History</a>
+<a href="/">Back home</a>
+
+</body>
+</html>
