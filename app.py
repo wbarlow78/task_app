@@ -54,17 +54,8 @@ class Task(db.Model):
     category = db.Column(db.String(50), default="General")
 
 with app.app_context():
+    db.drop_all()
     db.create_all()
-
-    try:
-        db.session.execute(text(
-            "ALTER TABLE task ADD COLUMN category VARCHAR(50) DEFAULT 'General'"
-        ))
-        db.session.commit()
-        print("CATEGORY COLUMN ADDED")
-    except Exception as e:
-        db.session.rollback()
-        print("CATEGORY COLUMN CHECK:", e)
 
 def uid():
     return current_user.id.strip().lower()
@@ -504,10 +495,6 @@ def edit_task(task_id):
         return redirect("/")
 
     return render_template("edit_task.html", task=task)
-
-with app.app_context():
-    db.drop_all()
-    db.create_all()
 
 if __name__ == "__main__":
     app.run(debug=True)
