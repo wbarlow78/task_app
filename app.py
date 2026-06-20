@@ -7,7 +7,7 @@ from sqlalchemy import case, text
 
 app = Flask(__name__)
 app.secret_key = "secret123"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks2.db'
 
 db = SQLAlchemy(app)
 
