@@ -59,8 +59,9 @@ body {
 
 nav {
     display: flex;
-    flex-direction: column;
-    gap: 10px;1
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 
 nav a {
