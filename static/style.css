@@ -8,14 +8,19 @@ body {
 .container {
     max-width: 900px;
     margin: 0 auto;
+    padding: 20px;
 }
 
+.overdue {
+    background: #fff5f5;
+}
 .task-card {
     background: white;
     border: 1px solid #ddd;
     border-radius: 10px;
-    padding: 14px 16px;
-    margin: 12 px 0;
+    padding: 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.1);
 }
 
 .task-card p { 
@@ -71,8 +76,13 @@ input,
 select,
 textarea,
 button {
-    font-size: 18px;
-    padding: 12px;
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
 }
 .task-card,
 .habit-card {
