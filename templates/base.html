@@ -12,10 +12,22 @@
     <a href="/">Tasks</a> |
     <a href="/habits">Habits</a> |
     <a href="/habit_dashboard">Habit Dashboard</a> |
-    <a href="/habit_history">Habit History</a>
+    <a href="/habit_history">Habit History</a> |
+    <a href="/stats">Statistics</a>
 </nav>
 
 <hr>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="flash-message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
 
 {% block content %}
 {% endblock %}

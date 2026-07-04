@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
 from datetime import date, timedelta
 from sqlalchemy import case, text
+from sqlalchemy import or_
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -145,7 +146,10 @@ def complete_habit(habit_id):
 def index():
     today = date.today()
     current_filter = request.args.get("filter", "all")
+    sort_by = request.args.get("sort", "due_date")
     selected_category = request.args.get("category")
+    search = request.args.get("search", "")
+
     user_id = current_user.get_id()
 
     if request.method == "POST":
@@ -168,11 +172,13 @@ def index():
                 category=category,
                 done=False,
                 user_id=user_id
+
             )
             db.session.add(new_task)
             db.session.commit()
+            flash("Task added successfully!")
 
-        return redirect(url_for("index"))
+        return redirect("/")
 
     base_query = Task.query.filter_by(user_id=user_id)
 
@@ -205,12 +211,30 @@ def index():
     elif current_filter == "today":
         query = query.filter(Task.due_date == today)
 
+    query = Task.query.filter_by(user_id=user_id)
+    
+    if search:
+        query = query.filter(
+            or_(
+                Task.text.ilike(f"%{search}%"),
+                Task.notes.ilike(f"%{search}%"),
+                Task.category.ilike(f"%{search}%")
+            )
+        )
+        
+    if sort_by == "due_date":
+        query = query.order_by(Task.due_date)
+
+    elif sort_by == "priority":
+        query = query.order_by(Task.priority)
+        
     tasks = query.all()
 
     return render_template(
         "index.html",
         tasks=tasks,
         current_filter=current_filter,
+        search=search,
         all_count=all_count,
         todo_count=todo_count,
         overdue_count=overdue_count,
@@ -220,7 +244,8 @@ def index():
         code_count=code_count,
         church_count=church_count,
         home_count=home_count,
-        errands_count=errands_count
+        errands_count=errands_count,
+        sort_by=sort_by
     )
     
 
@@ -268,6 +293,22 @@ def habits():
         total=total
     )
 
+@app.route("/completed")
+@login_required
+def completed():
+    user_id = current_user.get_id()
+
+    tasks = Task.query.filter_by(
+        user_id=user_id,
+        done=True
+    ).all()
+
+    return render_template(
+        "index.html",
+        tasks=tasks,
+        page_title="Completed Tasks"
+    )
+
 @app.route("/today")
 @login_required
 def today_dashboard():
@@ -305,6 +346,9 @@ def today_dashboard():
     today_score = len(tasks_today) + len(completed_habits)
     today_total = len(tasks_today) + len(overdue_tasks) + len(completed_habits) + len(incomplete_habits)
 
+    for task in Task.query.filter_by(user_id=user_id).all():
+        print(task.text, repr(task.priority))
+
     return render_template(
         "today.html",
         tasks_today = tasks_today, 
@@ -328,6 +372,31 @@ def complete_task(task_id):
     db.session.commit()
 
     return redirect("/")
+
+@app.route("/stats")
+@login_required
+def stats(): 
+    user_id = current_user.get_id()
+
+    total_tasks = Task.query.filter_by(user_id=user_id).count()
+    completed_tasks = Task.query.filter_by(user_id=user_id, done=True).count()
+    todo_tasks = Task.query.filter_by(user_id=user_id, done=False).count()
+
+    high_priority = Task.query.filter_by(user_id=user_id, priority="High").count()
+    medium_priority = Task.query.filter_by(user_id=user_id, priority="Medium").count()
+    low_priority = Task.query.filter_by(user_id=user_id, priority="Low").count()
+
+    return render_template(
+        "stats.html",
+        completed_tasks=completed_tasks,
+        total_tasks=total_tasks,
+        complete_tasks=completed_tasks,
+        todo_tasks=todo_tasks,
+        high_priority=high_priority,
+        medium_priority=medium_priority,
+        low_priority=low_priority
+    )
+
 
 @app.route("/habit_dashboard")
 @login_required
@@ -391,31 +460,9 @@ def habit_history_last7():
     return render_template("history.html", logs=logs)
 
 
-# ➕ Add task
-@app.route('/add', methods=['POST'])
-@login_required
-def add():
-    text = request.form['task']
-    notes = request.form.get("notes")
-
-    print("Note received", notes)
-    due_date_str = request.form.get('due_date')
-
-    due_date = None
-    if due_date_str:
-        due_date = datetime.strptime(due_date_str, "%Y-%m-%d").date()
-
-    new_task = Task(
-        text=text,
-        due_date=due_date,
-        done=False,
-        user_id=uid(), 
-        priority=priority,
-        notes=notes
-    )
-
     db.session.add(new_task)
     db.session.commit()
+    flash("Task added successfully!")
 
     return redirect('/')
 
@@ -452,9 +499,11 @@ def delete_habit(habit_id):
 @login_required
 def delete(task_id):
     task = Task.query.get(task_id)
+
     if task.user_id == uid():
         db.session.delete(task)
         db.session.commit()
+        flash("Task deleted successfully!")
 
     return redirect('/')
 
@@ -492,7 +541,9 @@ def edit_task(task_id):
             task.due_date = None
 
         db.session.commit()
+        flash("Task edited successfully!")
         return redirect("/")
+        
 
     return render_template("edit_task.html", task=task)
 

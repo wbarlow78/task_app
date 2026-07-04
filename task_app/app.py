@@ -17,7 +17,7 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 
 
-# 👤 User class
+# 👤 User clas
 class User(UserMixin):
     def __init__(self, username):
         self.id = username
