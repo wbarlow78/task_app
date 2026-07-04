@@ -16,7 +16,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
-
 # 👤 User clas
 class User(UserMixin):
     def __init__(self, username):
@@ -428,7 +427,8 @@ def toggle(task_id):
 
 @app.route("/delete_habit/<int:habit_id>", methods=["POST"])
 @login_required
-def delete_habit(habit_id):
+def delete_habit(habit_id):pwd
+
     habit = Habit.query.get(habit_id)
 
     if habit and habit.user_id == uid():

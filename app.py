@@ -8,10 +8,6 @@ from sqlalchemy import or_
 
 app = Flask(__name__)
 app.secret_key = "secret123"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks2.db'
-
-db = SQLAlchemy(app)
-
 # 🔐 Login setup
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -390,7 +386,6 @@ def stats():
         "stats.html",
         completed_tasks=completed_tasks,
         total_tasks=total_tasks,
-        complete_tasks=completed_tasks,
         todo_tasks=todo_tasks,
         high_priority=high_priority,
         medium_priority=medium_priority,
