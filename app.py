@@ -8,11 +8,15 @@ from sqlalchemy import or_
 
 app = Flask(__name__)
 app.secret_key = "secret123"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
+
+db = SQLAlchemy(app)
+
+
 # 🔐 Login setup
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-
 
 # 👤 User class
 class User(UserMixin):
@@ -45,6 +49,7 @@ class Task(db.Model):
     text = db.Column(db.String(200), nullable=False)
     due_date = db.Column(db.Date)
     done = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.String(50))
     priority = db.Column(db.String(20), default="Medium")
     notes = db.Column(db.Text)
@@ -223,7 +228,13 @@ def index():
 
     elif sort_by == "priority":
         query = query.order_by(Task.priority)
-        
+
+    elif sort_by == "newest":
+        query = query.order_by(Task.id.desc())
+
+    elif sort_by == "oldest":
+        query = query.order_by(Task.id.asc())
+
     tasks = query.all()
 
     return render_template(
