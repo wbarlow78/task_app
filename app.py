@@ -49,6 +49,7 @@ class Task(db.Model):
     text = db.Column(db.String(200), nullable=False)
     due_date = db.Column(db.Date)
     done = db.Column(db.Boolean, default=False)
+    completed_at = db.Column(db.Date)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.String(50))
     priority = db.Column(db.String(20), default="Medium")
@@ -479,6 +480,11 @@ def toggle(task_id):
     task = Task.query.get(task_id)
     if task.user_id == uid():
         task.done = not task.done
+
+        if task.done:
+            task.completed_at = date.today()
+        else:
+            task.completed_at = None
         db.session.commit()
 
     return redirect('/')
