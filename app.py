@@ -377,10 +377,27 @@ def complete_task(task_id):
 def stats(): 
     user_id = current_user.get_id()
 
-    total_tasks = Task.query.filter_by(user_id=user_id).count()
-    completed_tasks = Task.query.filter_by(user_id=user_id, done=True).count()
-    todo_tasks = Task.query.filter_by(user_id=user_id, done=False).count()
+    today = date.today()
+    week_ago = today - timedelta(days=7)
 
+    completed_tasks = Task.query.filter_by(user_id=user_id, done=True).count()
+
+    total_tasks = Task.query.filter_by(user_id=user_id).count()
+    if total_tasks > 0:
+        completion_rate = round(
+            (completed_tasks / total_tasks) * 100
+        )
+    else:
+        completion_rate = 0
+
+    todo_tasks = Task.query.filter_by(user_id=user_id, done=False).count()
+    weekly_completed = Task.query.filter(
+        Task.user_id == user_id,
+        Task.done == True,
+        Task.completed_at >= week_ago
+    ).count()
+
+    weekly_percent = min(weekly_completed * 10, 100)
     high_priority = Task.query.filter_by(user_id=user_id, priority="High").count()
     medium_priority = Task.query.filter_by(user_id=user_id, priority="Medium").count()
     low_priority = Task.query.filter_by(user_id=user_id, priority="Low").count()
@@ -392,7 +409,10 @@ def stats():
         todo_tasks=todo_tasks,
         high_priority=high_priority,
         medium_priority=medium_priority,
-        low_priority=low_priority
+        low_priority=low_priority,
+        weekly_completed=weekly_completed,
+        weekly_percent=weekly_percent,
+        completion_rate=completion_rate
     )
 
 @app.route("/completed")

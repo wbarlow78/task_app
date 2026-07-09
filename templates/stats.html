@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Task Statistics</title>
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block content %}
 
 <h1>Task Statistics</h1>
 
@@ -20,5 +16,19 @@
 
 <p>Low Priority: {{ low_priority }}</p>
 
-</body>
-</html>
+<h3>Last 7 Days</h3>
+<p>Tasks Completed: {{ weekly_completed }}</p>
+
+<div class="stat-bar">
+    <div class="stat-fill" style="width: {{ weekly_percent }}%;">
+        {{ weekly_completed }}
+    </div>
+</div>
+<h3>Overall Completion Rate</h3>
+
+<p>{{ completion_rate }}%</p>
+<div class="stat-fill" style="width: {{ completion_rate }}%">
+    {{ completion_rate }}%
+</div>
+</div>
+{% endblock %}
