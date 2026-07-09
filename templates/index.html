@@ -33,13 +33,15 @@
 
     <a href="/?filter=overdue" {% if current_filter == "overdue" %}style="font-weight:bold; color:red;"{% endif %}>
         Overdue ({{ overdue_count }})
-    </a>
+    </a> |
 
     <a href="/?filter=today">Today ({{ today_count }})</a>
 </p>
 
 <p>
     <a href="/">All</a> |
+
+    <a href="/completed">Completed</a> |
 
     <a href="/?category=General">
         General ({{ general_count }})
@@ -65,7 +67,6 @@
         Errands ({{ errands_count }})
     </a>
     |
-    <a href="/completed">Completed</a>
 </p>
 
 
@@ -146,7 +147,12 @@
             Status: {{ "Done" if task.done else "Todo" }} |
             Category: {{ task.category }} |
             Created: {{ task.created_at }} |
-        </p>
+             </p>
+        {% if task.completed_at %}
+        <p>Completed: {{ task.completed_at }}</p>
+        {% endif %}
+
+        
 
         {% if task.notes %}
             <div class="task-notes">  

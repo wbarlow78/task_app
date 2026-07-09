@@ -198,6 +198,12 @@ def index():
         Task.due_date < today
     ).count()
 
+    today_count = Task.query.filter_by(
+        user_id=user_id,
+        done=False,
+        due_date=today
+    ).count()
+
     query = base_query
 
     if selected_category:
@@ -253,6 +259,7 @@ def index():
         church_count=church_count,
         home_count=home_count,
         errands_count=errands_count,
+        today_count=today_count,
         sort_by=sort_by
     )
     
@@ -299,22 +306,6 @@ def habits():
         score=score,
         completed_today=completed_today,
         total=total
-    )
-
-@app.route("/completed")
-@login_required
-def completed():
-    user_id = current_user.get_id()
-
-    tasks = Task.query.filter_by(
-        user_id=user_id,
-        done=True
-    ).all()
-
-    return render_template(
-        "index.html",
-        tasks=tasks,
-        page_title="Completed Tasks"
     )
 
 @app.route("/today")
@@ -404,6 +395,15 @@ def stats():
         low_priority=low_priority
     )
 
+@app.route("/completed")
+@login_required
+def completed_tasks():
+    tasks = Task.query.filter_by(
+        user_id=current_user.get_id(),
+        done=True
+    ).order_by(Task.completed_at.desc()).all()
+
+    return render_template("completed.html", tasks=tasks)
 
 @app.route("/habit_dashboard")
 @login_required
