@@ -117,3 +117,7 @@ button {
     text-align: center;
 
 }
+
+.task-card {
+    transition: transform 0.2s ease;
+}
