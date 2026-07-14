@@ -345,7 +345,7 @@ def today_dashboard():
     today_score = len(tasks_today) + len(completed_habits)
     today_total = len(tasks_today) + len(overdue_tasks) + len(completed_habits) + len(incomplete_habits)
 
-    for task in Task.query.filter_by(user_id=user_id).all():
+    for task in Task.query.filter_by(user_id=uid).all():
         print(task.text, repr(task.priority))
 
     return render_template(
