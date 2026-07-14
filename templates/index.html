@@ -137,50 +137,51 @@
 
 <ul>
     {% for task in tasks %}
-    <div class="task-card {{ task.priority|lower }}-priority">
 
-        <p class="task-title">{{ task.text }}</p>
+<div class="task-card {{ task.priority|lower }}-priority"
+     id="task-{{ task.id }}">
 
-        <p class="task-meta">
-            Due: {{ task.due_date }} |
-            Priority: {{ task.priority }} |
-            Status: {{ "Done" if task.done else "Todo" }} |
-            Category: {{ task.category }} |
-            Created: {{ task.created_at }} |
-             </p>
-        {% if task.completed_at %}
+    <p class="task-title">{{ task.text }}</p>
+
+    <p class="task-meta">
+        Due: {{ task.due_date }} |
+        Priority: {{ task.priority }} |
+        Status: {{ "Done" if task.done else "Todo" }} |
+        Category: {{ task.category }} |
+        Created: {{ task.created_at }}
+    </p>
+
+    {% if task.completed_at %}
         <p>Completed: {{ task.completed_at }}</p>
-        {% endif %}
+    {% endif %}
 
-        
+    {% if task.notes %}
+        <div class="task-notes">
+            {{ task.notes }}
+        </div>
+    {% endif %}
 
-        {% if task.notes %}
-            <div class="task-notes">  
-                {{ task.notes }}              
-            </div>
-        {% endif %}      
+    <form action="{{ url_for('toggle', task_id=task.id) }}"
+          method="POST"
+          class="toggle-form"
+          style="display:inline;">
+        <button type="submit">
+            {% if task.done %}
+                Undo
+            {% else %}
+                Complete
+            {% endif %}
+        </button>
+    </form>
 
-        <p>
+    <a href="/edit/{{ task.id }}">Edit</a>
 
+    <a href="/delete/{{ task.id }}"
+   class="delete-link">
+    Delete
+</a>
 
-            <a href="/edit/{{ task.id }}">Edit</a>
-            <a href="/delete/{{ task.id }}"
-                onclick="return confirm('Are you sure you want to delete this task?');">
-                Delete
-            </a>
-
-            <form action="{{ url_for('toggle', task_id=task.id) }}" method="POST" style="display:inline;">
-    <button type="submit">
-        {% if task.done %}
-            Undo
-        {% else %}
-            Complete
-        {% endif %}
-    </button>
-</form>
-        </p>
-
-    </div>
+</div>
 
     {% else %}
         <p>No tasks found.</p>       
