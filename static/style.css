@@ -48,6 +48,13 @@ to {
 }
 }
 
+.chart-container {
+    width: 100%
+    max-width: 700px;
+    height: 400px;
+    margin: 30px auto;
+}
+
 @keyframes fadeOut {
     to {
         opacity: 0;

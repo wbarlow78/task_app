@@ -27,8 +27,57 @@
 <h3>Overall Completion Rate</h3>
 
 <p>{{ completion_rate }}%</p>
+<div class="stat-bar">
 <div class="stat-fill" style="width: {{ completion_rate }}%">
     {{ completion_rate }}%
+    </div>
 </div>
+
+<h3>Tasks by Priority</h3>
+
+<div class="chart-container">
+    <canvas id="priorityChart"></canvas>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const priorityChart = document.getElementById("priorityChart");
+
+    new Chart(priorityChart, {
+        type: "bar",
+
+        data: {
+            labels: ["High", "Medium", "Low"],
+
+            datasets: [{
+                label: "Number of Tasks",
+
+                data: [
+                    {{ high_priority }},
+                    {{ medium_priority }},
+                    {{ low_priority }}
+                ],
+                backgroundColor: [
+                    "red",
+                    "orange",
+                    "green"
+                ]
+            }]
+        },
+
+    options: {
+        responsive: true,
+
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+    });
+</script>
 {% endblock %}
