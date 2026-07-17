@@ -389,6 +389,21 @@ def stats():
         )
     else:
         completion_rate = 0
+    
+    last7_labels = []
+    last7_counts = []
+
+    for i in range(6, -1, -1):
+        day = date.today() - timedelta(days=i)
+
+        count = Task.query.filter(
+            Task.user_id == user_id,
+            Task.done == True, 
+            db.func.date(Task.completed_at) == day 
+        ).count()
+
+        last7_labels.append(day.strftime("%a"))
+        last7_counts.append(count)
 
     todo_tasks = Task.query.filter_by(user_id=user_id, done=False).count()
     weekly_completed = Task.query.filter(
@@ -412,7 +427,9 @@ def stats():
         low_priority=low_priority,
         weekly_completed=weekly_completed,
         weekly_percent=weekly_percent,
-        completion_rate=completion_rate
+        completion_rate=completion_rate,
+        last7_labels=last7_labels,
+        last7_counts=last7_counts
     )
 
 @app.route("/completed")
