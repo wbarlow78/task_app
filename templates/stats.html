@@ -80,4 +80,37 @@
     }
     });
 </script>
+
+<h2> Completed Tasks (Last 7 Days)</h2>
+
+<canvas id="weeklyChart"></canvas>
+<script>
+    const weeklyCanvas = document.getElementById("weeklyChart");
+
+    new Chart(weeklyCanvas, {
+        type: "line",
+
+        data: {
+            labels: {{ last7_labels|tojson }},
+            datasets: [{
+                label: "Completed Tasks",
+                data: {{ last7_counts|tojson }},
+
+                tension: 0.3
+            }]
+        },
+
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}
