@@ -3,45 +3,40 @@
 {% block content %}
 
 <h2>Task App</h2>
-<form method="GET">
-    <input type="text"
+
+<form method="GET" action="{{ url_for('index') }}">
+    <input
+        type="text"
         name="search"
         placeholder="Search tasks"
-        value="{{ search }}">
-    
-<form method="GET">
-    <select name="sort">
-        <option value="priority" {% if sort_by == "priority" %}selected{% endif %}>Priority</option>
-        <option value="due_date" {% if sort_by == "due_date" %}selected{% endif %}>Due Date</option>
-        <option value="newest" {% if sort_by == "newest" %}selected{% endif %}>Newest</option>
-        <option value="oldest" {% if sort_by == "oldest" %}selected{% endif %}>Oldest</option>
-    </select>
-
-    <button type="submit">Sort</button>
+        value="{{ search }}"
+    >
+    <button type="submit">Search</button>
 </form>
-  
 
-
-<p> 
-    <a href="/" {% if not current_filter %}style="font-weight:bold"{% endif %}>
+<p>
+    <a href="/" {% if not current_filter %}style="font-weight: bold;"{% endif %}>
         All ({{ all_count }})
     </a> |
 
-    <a href="/?filter=todo" {% if current_filter == "todo" %}style="font-weight:bold"{% endif %}>
+    <a href="/?filter=todo"
+       {% if current_filter == "todo" %}style="font-weight: bold;"{% endif %}>
         Todo ({{ todo_count }})
     </a> |
 
-    <a href="/?filter=overdue" {% if current_filter == "overdue" %}style="font-weight:bold; color:red;"{% endif %}>
+    <a href="/?filter=overdue"
+       {% if current_filter == "overdue" %}style="font-weight: bold; color: red;"{% endif %}>
         Overdue ({{ overdue_count }})
     </a> |
 
-    <a href="/?filter=today">Today ({{ today_count }})</a>
+    <a href="/?filter=today"
+       {% if current_filter == "today" %}style="font-weight: bold;"{% endif %}>
+        Today ({{ today_count }})
+    </a>
 </p>
 
 <p>
     <a href="/">All</a> |
-
-    <a href="/completed">Completed</a> |
 
     <a href="/?category=General">
         General ({{ general_count }})
@@ -66,10 +61,7 @@
     <a href="/?category=Errands">
         Errands ({{ errands_count }})
     </a>
-    |
 </p>
-
-
 
 <div class="focus-box">
 
@@ -117,7 +109,7 @@
 
     <select name="priority">
         <option value="High">High</option>
-        <option value="Medium">Medium</option>
+        <option value="Medium" selected>Medium</option>
         <option value="Low">Low</option>
     </select>
 
@@ -135,57 +127,36 @@
 
 <a href="/logout">Logout</a>
 
-<ul>
+<div class="task-list">
     {% for task in tasks %}
+        <div class="task-card {{ task.priority|lower }}-priority"
+             id="task-{{ task.id }}">
 
-<div class="task-card {{ task.priority|lower }}-priority"
-     id="task-{{ task.id }}">
+            <p class="task-title">{{ task.text }}</p>
 
-    <p class="task-title">{{ task.text }}</p>
+            <p class="task-meta">
+                Due: {{ task.due_date }} |
+                Priority: {{ task.priority }} |
+                Status: {{ "Done" if task.done else "Todo" }} |
+                Category: {{ task.category }}
+            </p>
 
-    <p class="task-meta">
-        Due: {{ task.due_date }} |
-        Priority: {{ task.priority }} |
-        Status: {{ "Done" if task.done else "Todo" }} |
-        Category: {{ task.category }} |
-        Created: {{ task.created_at }}
-    </p>
-
-    {% if task.completed_at %}
-        <p>Completed: {{ task.completed_at }}</p>
-    {% endif %}
-
-    {% if task.notes %}
-        <div class="task-notes">
-            {{ task.notes }}
-        </div>
-    {% endif %}
-
-    <form action="{{ url_for('toggle', task_id=task.id) }}"
-          method="POST"
-          class="toggle-form"
-          style="display:inline;">
-        <button type="submit">
-            {% if task.done %}
-                Undo
-            {% else %}
-                Complete
+            {% if task.notes %}
+                <div class="task-notes">
+                    {{ task.notes }}
+                </div>
             {% endif %}
-        </button>
-    </form>
 
-    <a href="/edit/{{ task.id }}">Edit</a>
+            <p>
+                <a href="{{ url_for('edit_task', task_id=task.id) }}">Edit</a>
+                |
+                <a href="/delete/{{ task.id }}">Delete</a>
+            </p>
 
-    <a href="/delete/{{ task.id }}"
-   class="delete-link">
-    Delete
-</a>
-
-</div>
-
+        </div>
     {% else %}
-        <p>No tasks found.</p>       
+        <p>No tasks found.</p>
     {% endfor %}
-</ul>
+</div>
 
 {% endblock %}

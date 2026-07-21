@@ -142,28 +142,36 @@ def complete_habit(habit_id):
 
     return redirect("/habits")
 
-# 🏠 Home
 @app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
     today = date.today()
+    tomorrow = today + timedelta(days=1)
+
     current_filter = request.args.get("filter", "all")
     sort_by = request.args.get("sort", "due_date")
     selected_category = request.args.get("category")
-    search = request.args.get("search", "")
+    search = request.args.get("search", "").strip()
 
     user_id = current_user.get_id()
 
+    # -------------------------
+    # Add a new task
+    # -------------------------
     if request.method == "POST":
-        task_text = request.form.get("task")
+        task_text = request.form.get("task", "").strip()
         due_date_text = request.form.get("due_date")
         priority = request.form.get("priority", "Medium")
-        notes = request.form.get("notes")
+        notes = request.form.get("notes", "").strip()
         category = request.form.get("category", "General")
 
         due_date = None
+
         if due_date_text:
-            due_date = datetime.strptime(due_date_text, "%Y-%m-%d").date()
+            due_date = datetime.strptime(
+                due_date_text,
+                "%Y-%m-%d"
+            ).date()
 
         if task_text:
             new_task = Task(
@@ -174,53 +182,118 @@ def index():
                 category=category,
                 done=False,
                 user_id=user_id
-
             )
+
             db.session.add(new_task)
             db.session.commit()
+
             flash("Task added successfully!")
 
-        return redirect("/")
+        return redirect(url_for("index"))
 
+    # -------------------------
+    # Base query for this user
+    # -------------------------
     base_query = Task.query.filter_by(user_id=user_id)
 
+    # -------------------------
+    # Task counts
+    # -------------------------
     all_count = base_query.count()
-    general_count = base_query.filter_by(category="General").count()
-    work_count = base_query.filter_by(category="Work").count()
-    code_count = base_query.filter_by(category="Code").count()
-    church_count = base_query.filter_by(category="Church").count()
-    home_count = base_query.filter_by(category="Home").count()
-    errands_count = base_query.filter_by(category="Errands").count()
 
     todo_count = base_query.filter_by(done=False).count()
+
     overdue_count = base_query.filter(
-        Task.done == False,
+        Task.done.is_(False),
+        Task.due_date.isnot(None),
         Task.due_date < today
     ).count()
 
-    today_count = Task.query.filter_by(
-        user_id=user_id,
-        done=False,
-        due_date=today
+    today_count = base_query.filter(
+        Task.done.is_(False),
+        Task.due_date == today
     ).count()
 
+    # -------------------------
+    # Completed today
+    # -------------------------
+    start_of_today = datetime.combine(today, datetime.min.time())
+    start_of_tomorrow = datetime.combine(tomorrow, datetime.min.time())
+
+    completed_today_count = base_query.filter(
+        Task.done.is_(True),
+        Task.completed_at >= start_of_today,
+        Task.completed_at < start_of_tomorrow
+    ).count()
+
+    # -------------------------
+    # Productivity score
+    # -------------------------
+    completed_count = base_query.filter_by(done=True).count()
+
+    if all_count > 0:
+        productivity_score = round(
+            completed_count / all_count * 100
+        )
+    else:
+        productivity_score = 0
+
+    # -------------------------
+    # Category counts
+    # -------------------------
+    general_count = base_query.filter_by(
+        category="General"
+    ).count()
+
+    work_count = base_query.filter_by(
+        category="Work"
+    ).count()
+
+    code_count = base_query.filter_by(
+        category="Code"
+    ).count()
+
+    church_count = base_query.filter_by(
+        category="Church"
+    ).count()
+
+    home_count = base_query.filter_by(
+        category="Home"
+    ).count()
+
+    errands_count = base_query.filter_by(
+        category="Errands"
+    ).count()
+
+    # -------------------------
+    # Begin the displayed query
+    # -------------------------
     query = base_query
 
+    # Category filter
     if selected_category:
-        query = query.filter_by(category=selected_category)
+        query = query.filter_by(
+            category=selected_category
+        )
 
+    # Status filter
     if current_filter == "todo":
         query = query.filter_by(done=False)
+
     elif current_filter == "overdue":
         query = query.filter(
-            Task.done == False,
-        Task.due_date < today
+            Task.done.is_(False),
+            Task.due_date.isnot(None),
+            Task.due_date < today
         )
-    elif current_filter == "today":
-        query = query.filter(Task.due_date == today)
 
-    query = Task.query.filter_by(user_id=user_id)
-    
+    elif current_filter == "today":
+        query = query.filter(
+            Task.done.is_(False),
+            Task.due_date == today
+        )
+
+    # Search
     if search:
         query = query.filter(
             or_(
@@ -229,7 +302,10 @@ def index():
                 Task.category.ilike(f"%{search}%")
             )
         )
-        
+
+    # -------------------------
+    # Sorting
+    # -------------------------
     if sort_by == "due_date":
         query = query.order_by(Task.due_date)
 
@@ -248,22 +324,26 @@ def index():
         "index.html",
         tasks=tasks,
         current_filter=current_filter,
+        selected_category=selected_category,
         search=search,
+        sort_by=sort_by,
+        today=today,
+
         all_count=all_count,
         todo_count=todo_count,
         overdue_count=overdue_count,
-        today=today,
+        today_count=today_count,
+        completed_today_count=completed_today_count,
+        productivity_score=productivity_score,
+
         general_count=general_count,
         work_count=work_count,
         code_count=code_count,
         church_count=church_count,
         home_count=home_count,
-        errands_count=errands_count,
-        today_count=today_count,
-        sort_by=sort_by
+        errands_count=errands_count
     )
     
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -374,48 +454,108 @@ def complete_task(task_id):
 
 @app.route("/stats")
 @login_required
-def stats(): 
+def stats():
     user_id = current_user.get_id()
 
     today = date.today()
     week_ago = today - timedelta(days=7)
 
-    completed_tasks = Task.query.filter_by(user_id=user_id, done=True).count()
+    # Basic task counts
+    total_tasks = Task.query.filter_by(
+        user_id=user_id
+    ).count()
 
-    total_tasks = Task.query.filter_by(user_id=user_id).count()
+    completed_tasks = Task.query.filter_by(
+        user_id=user_id,
+        done=True
+    ).count()
+
+    todo_tasks = Task.query.filter_by(
+        user_id=user_id,
+        done=False
+    ).count()
+
+    # Overall completion percentage
     if total_tasks > 0:
         completion_rate = round(
             (completed_tasks / total_tasks) * 100
         )
     else:
         completion_rate = 0
-    
+
+    # Completed tasks for each of the last seven days
     last7_labels = []
     last7_counts = []
 
     for i in range(6, -1, -1):
-        day = date.today() - timedelta(days=i)
+        day = today - timedelta(days=i)
 
         count = Task.query.filter(
             Task.user_id == user_id,
-            Task.done == True, 
-            db.func.date(Task.completed_at) == day 
+            Task.done.is_(True),
+            db.func.date(Task.completed_at) == day
         ).count()
 
         last7_labels.append(day.strftime("%a"))
         last7_counts.append(count)
 
-    todo_tasks = Task.query.filter_by(user_id=user_id, done=False).count()
+    # Tasks completed during the last seven days
     weekly_completed = Task.query.filter(
         Task.user_id == user_id,
-        Task.done == True,
+        Task.done.is_(True),
         Task.completed_at >= week_ago
     ).count()
 
     weekly_percent = min(weekly_completed * 10, 100)
-    high_priority = Task.query.filter_by(user_id=user_id, priority="High").count()
-    medium_priority = Task.query.filter_by(user_id=user_id, priority="Medium").count()
-    low_priority = Task.query.filter_by(user_id=user_id, priority="Low").count()
+
+    # Priority counts
+    high_priority = Task.query.filter_by(
+        user_id=user_id,
+        priority="High"
+    ).count()
+
+    medium_priority = Task.query.filter_by(
+        user_id=user_id,
+        priority="Medium"
+    ).count()
+
+    low_priority = Task.query.filter_by(
+        user_id=user_id,
+        priority="Low"
+    ).count()
+
+    # Achievement badges
+    badges = []
+
+    if completed_tasks >= 1:
+        badges.append(
+            ("🥇", "First Task", "Complete your first task")
+        )
+
+    if completed_tasks >= 10:
+        badges.append(
+            ("🔥", "Getting Started", "Complete 10 tasks")
+        )
+
+    if completed_tasks >= 50:
+        badges.append(
+            ("💪", "Productive", "Complete 50 tasks")
+        )
+
+    if completed_tasks >= 100:
+        badges.append(
+            ("🏆", "Century Club", "Complete 100 tasks")
+        )
+
+    if completed_tasks >= 250:
+        badges.append(
+            ("⚡", "High Achiever", "Complete 250 tasks")
+        )
+
+    if sum(last7_counts) >= 7:
+        badges.append(
+            ("📅", "Weekly Warrior", "Complete 7 tasks in 7 days")
+        )
 
     return render_template(
         "stats.html",
@@ -429,7 +569,8 @@ def stats():
         weekly_percent=weekly_percent,
         completion_rate=completion_rate,
         last7_labels=last7_labels,
-        last7_counts=last7_counts
+        last7_counts=last7_counts,
+        badges=badges
     )
 
 @app.route("/completed")

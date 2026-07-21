@@ -2,49 +2,107 @@
 
 {% block content %}
 
-<h1>Task Statistics</h1>
+<div class="stats-page">
 
-<p>Total Tasks: {{ total_tasks }}</p>
+    <h1>Task Statistics</h1>
 
-<p>Completed Tasks: {{ completed_tasks }}</p>
+    <div class="stats-summary">
+        <div class="summary-card">
+            <span class="summary-number">{{ total_tasks }}</span>
+            <span class="summary-label">Total Tasks</span>
+        </div>
 
-<p>Todo Tasks: {{ todo_tasks }}</p>
+        <div class="summary-card">
+            <span class="summary-number">{{ completed_tasks }}</span>
+            <span class="summary-label">Completed</span>
+        </div>
 
-<p>High Priority: {{ high_priority }}</p>
+        <div class="summary-card">
+            <span class="summary-number">{{ todo_tasks }}</span>
+            <span class="summary-label">Todo</span>
+        </div>
 
-<p>Medium Priority: {{ medium_priority }}</p>
-
-<p>Low Priority: {{ low_priority }}</p>
-
-<h3>Last 7 Days</h3>
-<p>Tasks Completed: {{ weekly_completed }}</p>
-
-<div class="stat-bar">
-    <div class="stat-fill" style="width: {{ weekly_percent }}%;">
-        {{ weekly_completed }}
+        <div class="summary-card">
+            <span class="summary-number">{{ weekly_completed }}</span>
+            <span class="summary-label">Completed This Week</span>
+        </div>
     </div>
+
+    <section class="stats-section">
+        <h2>Last 7 Days</h2>
+
+        <p>Tasks completed: {{ weekly_completed }}</p>
+
+        <div class="stat-bar">
+            <div
+                class="stat-fill"
+                style="width: {{ weekly_percent }}%;"
+            >
+                {{ weekly_percent }}%
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <h2>Achievements</h2>
+
+        {% if badges %}
+            <div class="badge-container">
+    {% for icon, title, description in badges %}
+        <div class="badge-card">
+            <div class="badge-icon">{{ icon }}</div>
+
+            <h3>{{ title }}</h3>
+
+            <p>{{ description }}</p>
+        </div>
+    {% endfor %}
 </div>
-<h3>Overall Completion Rate</h3>
 
-<p>{{ completion_rate }}%</p>
-<div class="stat-bar">
-<div class="stat-fill" style="width: {{ completion_rate }}%">
-    {{ completion_rate }}%
-    </div>
-</div>
+        {% else %}
+            <p>Complete tasks to unlock achievements.</p>
+        {% endif %}
+    </section>
 
-<h3>Tasks by Priority</h3>
+    <section class="stats-section">
+        <h2>Overall Completion Rate</h2>
 
-<div class="chart-container">
-    <canvas id="priorityChart"></canvas>
+        <p>{{ completion_rate }}%</p>
+
+        <div class="stat-bar">
+            <div
+                class="stat-fill"
+                style="width: {{ completion_rate }}%;"
+            >
+                {{ completion_rate }}%
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <h2>Tasks by Priority</h2>
+
+        <div class="chart-container">
+            <canvas id="priorityChart"></canvas>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <h2>Completed Tasks — Last 7 Days</h2>
+
+        <div class="chart-container">
+            <canvas id="weeklyChart"></canvas>
+        </div>
+    </section>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    const priorityChart = document.getElementById("priorityChart");
+    const priorityCanvas = document.getElementById("priorityChart");
 
-    new Chart(priorityChart, {
+    new Chart(priorityCanvas, {
         type: "bar",
 
         data: {
@@ -58,6 +116,7 @@
                     {{ medium_priority }},
                     {{ low_priority }}
                 ],
+
                 backgroundColor: [
                     "red",
                     "orange",
@@ -66,45 +125,45 @@
             }]
         },
 
-    options: {
-        responsive: true,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
 
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    stepSize: 1
+            scales: {
+                y: {
+                    beginAtZero: true,
+
+                    ticks: {
+                        stepSize: 1
+                    }
                 }
             }
         }
-    }
     });
-</script>
 
-<h2> Completed Tasks (Last 7 Days)</h2>
-
-<canvas id="weeklyChart"></canvas>
-<script>
     const weeklyCanvas = document.getElementById("weeklyChart");
 
     new Chart(weeklyCanvas, {
         type: "line",
 
         data: {
-            labels: {{ last7_labels|tojson }},
+            labels: {{ last7_labels | tojson }},
+
             datasets: [{
                 label: "Completed Tasks",
-                data: {{ last7_counts|tojson }},
-
+                data: {{ last7_counts | tojson }},
                 tension: 0.3
             }]
         },
 
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+
             scales: {
                 y: {
                     beginAtZero: true,
+
                     ticks: {
                         stepSize: 1
                     }
@@ -113,4 +172,5 @@
         }
     });
 </script>
+
 {% endblock %}
