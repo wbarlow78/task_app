@@ -26,6 +26,65 @@ body {
     margin: 20px 0 30px;
 }
 
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 20px 0 25px;
+}
+
+.dashboard-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 18px 10px;
+    min-height: 75px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    text-decoration: none;
+    color: #222;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    border-top: 5px solid #4a90e2;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 7px 16px rgba(0, 0, 0, 0.16);
+}
+
+.dashboard-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.dashboard-label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+.today-card {
+    border-top-color: #f0ad4e;
+}
+
+.overdue-card {
+    border-top-color: #d9534f
+}
+
+.completed-card{
+    border-top-color: #28a745;
+}
+
 .summary-card {
     background: white;
     padding: 20px;
@@ -279,6 +338,10 @@ button:hover {
         top: 15px;
         text-align: center;
     }
+
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .flash-message {
@@ -320,4 +383,28 @@ button:hover {
         opacity: 0;
         transform: translateX(120%);
     }
+}
+
+.task-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.task-form input,
+.task-form select,
+.task-form button {
+    height: 34px;
+    box-sizing: border-box;
+}
+
+.task-form textarea {
+    width: 220px;
+    height: 50px;
+    min-height: 50px;
+    padding: 8px;
+    box-sizing: border-box;
+    resize: vertical;
 }

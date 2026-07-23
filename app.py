@@ -214,6 +214,11 @@ def index():
         Task.due_date == today
     ).count()
 
+    completed_count = Task.query.filter_by(
+        user_id=user_id,
+        done=True
+    ).count()
+
     # -------------------------
     # Completed today
     # -------------------------
@@ -335,7 +340,7 @@ def index():
         today_count=today_count,
         completed_today_count=completed_today_count,
         productivity_score=productivity_score,
-
+        completed_count=completed_count,
         general_count=general_count,
         work_count=work_count,
         code_count=code_count,

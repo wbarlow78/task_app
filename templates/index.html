@@ -4,6 +4,31 @@
 
 <h2>Task App</h2>
 
+<div class="dashboard-cards">
+
+    <a href="/" class="dashboard-card">
+        <span class="dashboard-number">{{ all_count }}</span>
+        <span class="dashboard-label">All Tasks</span>
+    </a>
+
+    <a href="/?filter=today" class="dashboard-card today-card">
+        <span class="dashboard-number">{{ today_count }}</span>
+        <span class="dashboard-label">Today</span>
+    </a>
+
+    <a href="/?filter=overdue" class="dashboard-card overdue-card">
+        <span class="dashboard-number">{{ overdue_count }}</span>
+        <span class="dashboard-label">Overdue</span>
+    </a>
+
+    <a href="{{ url_for ('completed_tasks') }}"
+        class="dashboard-card completed-card">
+        <span class="dashboard-number">{{ completed_count }}</span>
+        <span class="dashboard-label">Completed</span>
+    </a>
+
+</div>
+
 <form method="GET" action="{{ url_for('index') }}">
     <input
         type="text"
@@ -100,29 +125,43 @@
 
 <h3>Productivity Score: {{ score }}%</h3>
 
-<form method="POST" action="{{ url_for('index') }}">
-    <input type="text" name="task" placeholder="New task" required>
+<form method="POST"
+    action="{{ url_for('index') }}"
+    class="task-form">
 
-    <input type="date" name="due_date">
+<input 
+    type="text"
+    name="task"
+    placeholder="New task"
+    required
 
-    <textarea name="notes" placeholder="Notes"></textarea>
+>
 
-    <select name="priority">
-        <option value="High">High</option>
-        <option value="Medium" selected>Medium</option>
-        <option value="Low">Low</option>
-    </select>
+<input
+    type="date"
+    name="due_date"
+>
 
-    <select name="category">
-        <option value="General">General</option>
-        <option value="Work">Work</option>
-        <option value="Code">Code</option>
-        <option value="Church">Church</option>
-        <option value="Home">Home</option>
-        <option value="Errands">Errands</option>
-    </select>
+<textarea
+        name="notes"
+        placeholder="Notes"
+    ></textarea>
 
-    <button type="submit">Add</button>
+<select name="priority">
+    <option value="High">High</option>
+    <option value="Medium" selected>Medium</option>
+    <option value="Low">Low</option>
+</select>
+
+<select name="category">
+    <option value="General">General</option>
+    <option value="Work">Work</option>
+    <option value="Church">Church</option>
+    <option value="Home">Home</option>
+    <option value="Errands">Errands</option>
+</select>
+
+<button type="submit">Add Task</button>
 </form>
 
 <a href="/logout">Logout</a>
