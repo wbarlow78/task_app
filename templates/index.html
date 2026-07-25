@@ -188,7 +188,21 @@
 
             <p>
                 <a href="{{ url_for('edit_task', task_id=task.id) }}">Edit</a>
-                |
+                
+                {% if not task.done %}
+                <form method="POST"
+                action="{{ url_for('toggle', task_id=task.id) }}"
+                class="complete-form">
+            <button type="submit">Complete</button>
+        </form>
+        {% else %}
+        <form method="POST"
+        action="{{ url_for('toggle', task_id=task.id) }}"
+        class="complete-form">
+        <button type="submit">Undo</button>
+    </form>
+    {% endif %}
+                
                 <a href="/delete/{{ task.id }}">Delete</a>
             </p>
 

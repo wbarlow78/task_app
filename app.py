@@ -668,7 +668,7 @@ def toggle(task_id):
             task.completed_at = date.today()
             flash("Task completed successfully!"),
         else:
-            task.completed_at = Noneadd ,
+            task.completed_at = None
         db.session.commit()
 
     return redirect('/')
