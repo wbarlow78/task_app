@@ -333,7 +333,6 @@ def index():
         search=search,
         sort_by=sort_by,
         today=today,
-
         all_count=all_count,
         todo_count=todo_count,
         overdue_count=overdue_count,

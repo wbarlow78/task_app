@@ -85,6 +85,24 @@ body {
     border-top-color: #28a745;
 }
 
+.due-overdue {
+    color: #d62828;
+    font-weight: bold;
+}
+
+.due-today {
+    color: #f77f00;
+    font-weight: bold;
+}
+
+.due-future {
+    color: #2a9d8f;
+}
+
+.due-complete {
+    color: gray;
+}
+
 .summary-card {
     background: white;
     padding: 20px;
