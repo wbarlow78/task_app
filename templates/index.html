@@ -164,6 +164,15 @@
 <button type="submit">Add Task</button>
 </form>
 
+<form method="POST"
+    action="{{ url_for('complete_all') }}"
+    onsubmit="return confirm('Mark all incomplete tasks as completed?')">
+
+    <button type="submit" class="complete-all-btn">
+    Complete All Tasks
+    </button>
+</form>
+
 <a href="/logout">Logout</a>
 
 <div class="task-list">

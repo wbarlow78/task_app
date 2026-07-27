@@ -4,6 +4,14 @@
 
 <h1>Completed Tasks</h1>
 
+<form method="POST"
+    action="{{ url_for('delete_completed') }}"
+    onsubmit="return confirm('Delete all completed tasks?  This cannot be undone.');">
+    <button type="submit" class="delete-completed-btn">
+        Delete All Completed Tasks
+    </button>
+</form>
+
 <p><a href="/">Back to Active Tasks</a></p>
 <ul>
     {% for task in tasks %}

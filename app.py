@@ -454,7 +454,54 @@ def complete_task(task_id):
     task.done = True
     db.session.commit()
 
-    return redirect("/")
+@app.route("/delete_completed", methods=["POST"])
+@login_required
+def delete_completed():
+    user_id = current_user.get_id()
+
+    completed_tasks = Task.query.filter_by(
+        user_id=user_id,
+        done=True
+    ).all()
+
+    if not completed_tasks:
+        flash("There are no completed tasks to delete.")
+        return redirect(url_for("completed"))
+
+    deleted_count = len(completed_tasks)
+
+    for task in completed_tasks:
+        db.session.delete(task)
+
+    db.session.commit()
+
+    flash(f"{deleted_count} completed task(s) deleted successfully!")
+    return redirect(url_for("completed_tasks")) 
+
+@app.route("/complete_all", methods=["POST"])
+@login_required
+def complete_all():
+    user_id = current_user.get_id()
+
+    tasks = Task.query.filter_by(
+        user_id=user_id,
+        done=False
+    ).all()
+
+    if not tasks:
+        flash("There are no incomplete tasks.")
+        return redirect(url_for("index"))
+
+    completed_count = len(tasks)
+
+    for task in tasks:
+        task.done = True
+        task.completed_at = date.today()
+
+    db.session.commit()
+
+    flash(f"{completed_count} task(s) marked as completed!")
+    return redirect(url_for("index"))
 
 @app.route("/stats")
 @login_required
