@@ -59,6 +59,17 @@ body {
     box-shadow: 0 7px 16px rgba(0, 0, 0, 0.16);
 }
 
+/* Dashboard cards in dark mode */
+body.dark-mode .dashboard-card {
+    background-color: #1f1f1f;
+    color: #f1f1f1;
+    border: 1px solid #444;
+}
+
+body.dark-mode .dashboard-card:hover {
+    boxshadow: 0 7px 16px rgba(255, 253, 255, 0.08);
+}
+
 .dashboard-number {
     display: block;
     font-size: 2rem;
@@ -454,4 +465,52 @@ button:hover {
     padding: 8px;
     box-sizing: border-box;
     resize: vertical;
+}
+
+/* -------- Dark Mode -------*/
+
+body.dark-mode {
+    Background-color: #121212;
+    color: #f1f1f1;
+}
+
+body.dark-node .container {
+    background-color:#121212;
+}
+
+body.dark-mode .task-card,
+body.dark-mode .habit-card,
+body.dark-mode .stats-card,
+body.dark-mode .badge-card {
+    background-color: #1f1f1f;
+    color:#1f1f1f;
+    border: 1px solid #444;
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background-color: #2a2a2a;
+    color: white;
+    border: 1px solid #666;
+}
+
+body.dark-mode a {
+    color: #66b3ff
+}
+
+body.dark-mode button {
+    background-color: #2d7ff9;
+    color: white;
+}
+
+body.dark-mode .task-notes {
+    background-color: #2a2a2a;
+    color: white
+    border-color: #555;
+
+}
+
+body.dark-mode hr {
+    border-color: #444;
 }

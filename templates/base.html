@@ -15,6 +15,9 @@
     <a href="/habit_dashboard">Habit Dashboard</a> |
     <a href="/habit_history">Habit History</a> |
     <a href="/stats">Statistics</a>
+    <button id="darkModeToggle" type="button">
+        Dark Mode</button>
+    </button>
 </nav>
 
 <hr>
@@ -38,5 +41,12 @@
 </div>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+const darkModeButton = document.getElementById("darkModeToggle");
+
+darkModeButton.addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
+});
+</script>
 </body>
 </html>
