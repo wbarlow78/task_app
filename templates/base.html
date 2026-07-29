@@ -15,9 +15,8 @@
     <a href="/habit_dashboard">Habit Dashboard</a> |
     <a href="/habit_history">Habit History</a> |
     <a href="/stats">Statistics</a>
-    <button id="darkModeToggle" type="button">
-        Dark Mode</button>
-    </button>
+    <button type="button" id="darkModeToggle">Dark Mode</button>
+    
 </nav>
 
 <hr>
@@ -42,11 +41,34 @@
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <script>
-const darkModeButton = document.getElementById("darkModeToggle");
+document.addEventListener("DOMContentLoaded", function () {
+    const darkModeButton = document.getElementById("darkModeToggle");
 
-darkModeButton.addEventListener("click", function () {
-    document.body.classList.toggle("dark-mode");
+    if (!darkModeButton) {
+        console.error("Dark mode button not found.");
+        return;
+    }
+
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+        darkModeButton.textContent = "☀ Light Mode";
+    } else {
+        darkModeButton.textContent = "🌙 Dark Mode";
+    }
+
+    darkModeButton.addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            localStorage.setItem("theme", "dark");
+            darkModeButton.textContent = "Light Mode";
+        } else {
+            localStorage.setItem("theme", "light");
+            darkModeButton.textContent = "Dark Mode";
+        }
+    });
 });
 </script>
+
 </body>
 </html>
