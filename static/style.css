@@ -67,7 +67,7 @@ body.dark-mode .dashboard-card {
 }
 
 body.dark-mode .dashboard-card:hover {
-    boxshadow: 0 7px 16px rgba(255, 253, 255, 0.08);
+    box-shadow: 0 7px 16px rgba(255, 253, 255, 0.08);
 }
 
 .dashboard-number {
@@ -513,4 +513,12 @@ body.dark-mode .task-notes {
 
 body.dark-mode hr {
     border-color: #444;
+}
+
+#calendar {
+    min-height: 650px;
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 12px;
 }

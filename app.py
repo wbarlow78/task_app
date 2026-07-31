@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
@@ -453,6 +453,45 @@ def complete_task(task_id):
     
     task.done = True
     db.session.commit()
+
+@app.route("/calendar")
+@login_required
+def calendar_view():
+    return render_template("calendar.html")
+
+@app.route("/calendar/events")
+@login_required
+def calendar_events():
+    user_id = current_user.get_id()
+
+    tasks = Task.query.filter(
+        Task.user_id == user_id,
+        Task.due_date.isnot(None)
+    ).all()
+
+    events = []
+
+    for task in tasks:
+        if task.priority == "High":
+            color = "#dc3545"
+        elif task.priority == "Medium":
+            color = "#f0ad4e"
+        else:
+            color = "28a745"
+
+        events.append({
+            "id": task.id,
+            "title": task.text,
+            "start": task.due_date.isoformat(), 
+            "color": color,
+            "extendedProps": {
+                "priority": task.priority,
+                "category": task.category or "General",
+                "completed": task.done,
+                "notes": task.notes or "No notes"
+            }
+        })   
+    return jsonify(events)     
 
 @app.route("/delete_completed", methods=["POST"])
 @login_required

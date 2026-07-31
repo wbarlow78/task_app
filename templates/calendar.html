@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Task Calendar</h2>
+
+<div id="calendar"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const calendarElement = document.getElementById("calendar");
+
+    const calendar = new FullCalendar.Calendar(calendarElement, {
+        initialView: "dayGridMonth",
+
+        headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,listWeek"
+        },
+
+        events: "{{ url_for('calendar_events') }}",
+
+        eventClick: function (info) {
+            const details = info.event.extendedProps;
+
+            const status = details.completed
+                ? "Completed"
+                : "Not completed";
+
+            alert(
+                "Task: " + info.event.title +
+                "\n\nPriority: " + details.priority +
+                "\nCategory: " + details.category +
+                "\nStatus: " + status +
+                "\nNotes: " + details.notes
+            );
+        }
+    });
+
+    calendar.render();
+});
+</script>
+
+{% endblock %}
