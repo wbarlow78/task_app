@@ -23,9 +23,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         events: "{{ url_for('calendar_events') }}",
 
+        dateClick: function(info) {
+            window.location.href = "/?due_date="+ info.dateStr;
+        },
+
         eventClick: function (info) {
             const details = info.event.extendedProps;
-
+        
             const status = details.completed
                 ? "Completed"
                 : "Not completed";
