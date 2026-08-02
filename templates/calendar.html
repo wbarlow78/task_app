@@ -5,6 +5,31 @@
 <h2>Task Calendar</h2>
 
 <div id="calendar"></div>
+<dialog id="task-dialog">
+    <div class="calendar-task-popup">
+        <h3 id="popup-task-title"></h3>
+<p><strong>Priority:</strong> <span id="popup-priority"></span></p>
+<p><strong>Category:</strong> <span id="popup-category"></span></p>
+<p><strong>Status:</strong> <span id="popup-status"></span></p>
+<p><strong>Notes:</strong> <span id="popup-notes"></span></p>
+
+<div class="calendar-popup-buttons">
+    <a id="popup-edit-button" class="calendar-edit-button">
+        Edit
+    </a> 
+
+<form id="popup-complete-form" method="POST">
+    <button type="submit" id="popup-complete-button">
+        Complete
+    </button>
+</form>
+
+<button type="button" id="popup-close-button">
+    Close
+</button>
+</div>
+</div>
+</dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 
@@ -28,23 +53,48 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         eventClick: function (info) {
-            const details = info.event.extendedProps;
-        
-            const status = details.completed
-                ? "Completed"
-                : "Not completed";
+    const task = info.event;
+    const details = task.extendedProps;
+    const taskId = task.id;
 
-            alert(
-                "Task: " + info.event.title +
-                "\n\nPriority: " + details.priority +
-                "\nCategory: " + details.category +
-                "\nStatus: " + status +
-                "\nNotes: " + details.notes
-            );
-        }
-    });
+    const dialog = document.getElementById("task-dialog");
+
+    document.getElementById("popup-task-title").textContent =
+        task.title;
+
+    document.getElementById("popup-priority").textContent =
+        details.priority || "None";
+
+    document.getElementById("popup-category").textContent =
+        details.category || "General";
+
+    document.getElementById("popup-notes").textContent =
+        details.notes || "No notes";
+
+    document.getElementById("popup-status").textContent =
+        details.completed ? "Completed" : "Not completed";
+
+    document.getElementById("popup-edit-button").href =
+        "/edit/" + taskId;
+
+    document.getElementById("popup-complete-form").action =
+        "/toggle/" + taskId;
+
+    document.getElementById("popup-complete-button").textContent =
+        details.completed ? "Undo Completion" : "Complete Task";
+
+    dialog.showModal();
+}
+        
+            });
 
     calendar.render();
+
+    document
+        .getElementById("popup-close-button")
+        .addEventListener("click", function () {
+            document.getElementById("task-dialog").close();
+        });
 });
 </script>
 

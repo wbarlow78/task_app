@@ -522,3 +522,55 @@ body.dark-mode hr {
     margin-top: 20px;
     border-radius: 12px;
 }
+
+#task-dialog {
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    width: min(90%, 450px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+#task-dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+.calendar-task-popup {
+    padding:24px;
+}
+
+.calendar-task-popup h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.calendar-task-popup p {
+    margin: 10px 0;
+}
+
+.calendar-popup-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.calendar-popup-buttons form {
+    margin: 0;
+}
+
+.calendar-popup-buttons button,
+.calendar-edit-button {
+    display: inline-block;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+}
+    .calendar-edit-button {
+        background-color: #2d7ff9;
+        color: white;
+
+    }

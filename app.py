@@ -152,6 +152,7 @@ def index():
     sort_by = request.args.get("sort", "due_date")
     selected_category = request.args.get("category")
     search = request.args.get("search", "").strip()
+    due_date_filter = request.args.get("due_date", "").strip()
 
     user_id = current_user.get_id()
 
@@ -298,6 +299,24 @@ def index():
             Task.due_date == today
         )
 
+    # Calendar date filter
+
+    if due_date_filter:
+        try:
+
+            selected_date = datetime.strptime(
+                due_date_filter,
+                "%Y-%m-%d"
+            ).date()
+
+            query = query.filter(Task.due_date == selected_date)
+
+        except ValueError:
+            selected_date = None
+
+    else:
+        selected_date = None 
+        
     # Search
     if search:
         query = query.filter(
@@ -330,6 +349,7 @@ def index():
         tasks=tasks,
         current_filter=current_filter,
         selected_category=selected_category,
+        selected_date=selected_date,
         search=search,
         sort_by=sort_by,
         today=today,
@@ -467,7 +487,7 @@ def calendar_events():
     tasks = Task.query.filter(
         Task.user_id == user_id,
         Task.due_date.isnot(None)
-    ).all()
+    ).all()cd
 
     events = []
 
@@ -477,7 +497,7 @@ def calendar_events():
         elif task.priority == "Medium":
             color = "#f0ad4e"
         else:
-            color = "28a745"
+            color = "#28a745"
 
         events.append({
             "id": task.id,
