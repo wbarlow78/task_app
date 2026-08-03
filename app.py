@@ -487,7 +487,7 @@ def calendar_events():
     tasks = Task.query.filter(
         Task.user_id == user_id,
         Task.due_date.isnot(None)
-    ).all()cd
+    ).all()
 
     events = []
 
@@ -831,20 +831,29 @@ def edit_task(task_id):
         return redirect("/")
 
     if request.method == "POST":
-        task.text = request.form.get("text")
+        task_text = request.form.get("text", "").strip()
+
+        if not task_text:
+            flash("Task name is required.")
+            return render_template("edit_task.html", task=task)
+
+        task.text = task_text
         task.priority = request.form.get("priority", "Medium")
         task.notes = request.form.get("notes")
 
         due_date = request.form.get("due_date")
+
         if due_date:
-            task.due_date = datetime.strptime(due_date, "%Y-%m-%d").date()
+            task.due_date = datetime.strptime(
+                due_date,
+                "%Y-%m-%d"
+            ).date()
         else:
             task.due_date = None
 
         db.session.commit()
         flash("Task edited successfully!")
         return redirect("/")
-        
 
     return render_template("edit_task.html", task=task)
 
