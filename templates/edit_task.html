@@ -2,45 +2,88 @@
 
 {% block content %}
 
-<h2>Edit Task</h2>
+<div class="edit-task-card">
+    <h2>Edit Task</h2>
 
-<form method="POST">
-    <input
-        type="text"
-        name="text"
-        value="{{ task.text }}"
-        required
-    >
+    <form method="POST" class="edit-task-form">
 
-    <input
-        type="date"
-        name="due_date"
-        value="{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '' }}"
-    >
+        <div class="form-group full-width">
+            <label for="text">Task Name</label>
+            <input
+                type="text"
+                id="text"
+                name="text"
+                value="{{ task.text }}"
+                required
+            >
+        </div>
 
-    <select name="priority">
-        <option value="High" {% if task.priority == "High" %}selected{% endif %}>
-            High
-        </option>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="due_date">Due Date</label>
+                <input
+                    type="date"
+                    id="due_date"
+                    name="due_date"
+                    value="{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '' }}"
+                >
+            </div>
 
-        <option value="Medium" {% if task.priority == "Medium" %}selected{% endif %}>
-            Medium
-        </option>
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <select id="priority" name="priority">
+                    <option value="High" {% if task.priority == "High" %}selected{% endif %}>
+                        High
+                    </option>
 
-        <option value="Low" {% if task.priority == "Low" %}selected{% endif %}>
-            Low
-        </option>
-    </select>
+                    <option value="Medium" {% if task.priority == "Medium" %}selected{% endif %}>
+                        Medium
+                    </option>
 
-    <br><br>
+                    <option value="Low" {% if task.priority == "Low" %}selected{% endif %}>
+                        Low
+                    </option>
+                </select>
+            </div>
+        </div>
 
-    <textarea name="notes" placeholder="Notes">{{ task.notes or '' }}</textarea>
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category">
+                <option value="General" {% if task.category == "General" %}selected{% endif %}>
+                    General
+                </option>
 
-    <br><br>
+                <option value="Work" {% if task.category == "Work" %}selected{% endif %}>
+                    Work
+                </option>
 
-    <button type="submit">Save Changes</button>
-</form>
+                <option value="Personal" {% if task.category == "Personal" %}selected{% endif %}>
+                    Personal
+                </option>
 
-<p><a href="/">Cancel</a></p>
+                <option value="Health" {% if task.category == "Health" %}selected{% endif %}>
+                    Health
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group full-width">
+            <label for="notes">Notes</label>
+            <textarea
+                id="notes"
+                name="notes"
+                placeholder="Add notes"
+            >{{ task.notes or '' }}</textarea>
+        </div>
+
+        <div class="edit-form-actions">
+            <button type="submit">Save Changes</button>
+            <a href="/">Cancel</a>
+            <a href="/today">Today</a>
+        </div>
+
+    </form>
+</div>
 
 {% endblock %}

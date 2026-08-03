@@ -574,3 +574,95 @@ body.dark-mode hr {
         color: white;
 
     }
+
+    /* ---------- Edit Task Page ---------- */
+
+.edit-task-card {
+    max-width: 650px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+
+.edit-task-card h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 30px;
+}
+
+.edit-task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.edit-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 5px;
+}
+
+.edit-form-actions button {
+    width: auto;
+    padding: 12px 20px;
+}
+
+.edit-form-actions a {
+    display: inline-block;
+}
+
+body.dark-mode .edit-task-card {
+    background-color: #1f1f1f;
+    color: white;
+    border: 1px solid #444;
+}
+
+@media (max-width: 600px) {
+    .edit-task-card {
+        margin: 15px;
+        padding: 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-form-actions {
+        flex-wrap: wrap;
+    }
+}

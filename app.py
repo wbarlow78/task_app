@@ -840,6 +840,7 @@ def edit_task(task_id):
         task.text = task_text
         task.priority = request.form.get("priority", "Medium")
         task.notes = request.form.get("notes")
+        task.category = request.form.get("category", "General")
 
         due_date = request.form.get("due_date")
 
