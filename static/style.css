@@ -666,3 +666,14 @@ body.dark-mode .edit-task-card {
         flex-wrap: wrap;
     }
 }
+
+#char-count {
+    text-align: right;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+body.dark-mode #char-count {
+    color: #bbb;
+}
